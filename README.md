@@ -55,10 +55,15 @@
 ---
 ### Решение. Создание облачной инфраструктуры  
 1. Сервисный аккаунт
-- Создаем сервисный аккаунт `sa-terraform.tf` с правами `editor`.  
-Выводим в output **id** и **ключ** как sensitive данные, которые можно будет увидеть командами:
-``terraform output -json service_account_keys | jq -r '.access_key' и terraform output -json service_account_keys | jq -r '.secret_key'``.  
-  
+- Создаем сервисный аккаунт [sa-terraform.tf](./service-accounts/sa-terraform.tf) с правами `editor`.  
+Выводим в output **id** и **ключ** как sensitive данные, которые можно будет увидеть командами:  
+``terraform output -json service_account_keys | jq -r '.access_key'``  
+``terraform output -json service_account_keys | jq -r '.secret_key'``  
+
+![task1.1](./img/task1.1.png)  
+
+2. Подготавливаем S3 bucket в созданном ЯО аккаунте(создание бакета через TF)  
+   
 
 ### Создание Kubernetes кластера
 
