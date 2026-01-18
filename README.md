@@ -54,16 +54,18 @@
 
 ---
 ### Решение. Создание облачной инфраструктуры  
-1. Сервисный аккаунт
-- Создаем сервисный аккаунт [sa-terraform.tf](./service-accounts/sa-terraform.tf) с правами `editor`.  
-Выводим в output **id** и **ключ** как sensitive данные, которые можно будет увидеть командами:  
-``terraform output -json service_account_keys | jq -r '.access_key'``  
-``terraform output -json service_account_keys | jq -r '.secret_key'``  
-
-![task1.1](./img/task1.1.png)  
-
-2. Подготавливаем S3 bucket в созданном ЯО аккаунте(создание бакета через TF)  
-   
+1. Создаем сервисный аккаунт [sa-terraform.tf](./terraform/SA-S3/sa-terraform.tf) с правами `editor`.  
+2. Подготавливаем S3 [bucket](./terraform/SA-S3/bucket.tf) в созданном ЯО аккаунте(создание бакета через TF).  
+   ![task1.1-2](./img/task1.1-2.png). Сохраняем ключи ACCESS_KEY и SECRET_KEY в файл `backend.tfvars` для дальнейшего использования.  
+3. Создаем [конфигурацию](./terraform/backend/backend.tf) Terrafrom для использования ранее созданного бакета как бекенд для хранения стейт файла.  
+   - Создаем директорию `backend`.
+     Выполняем команды из директории `backend`:
+     ``` bash  
+     source backend.tfvars  
+     terraform init -backend-config="access_key=$ACCESS_KEY" -backend-config="secret_key=$SECRET_KEY"  
+     ```
+4. Создаем VPC с подсетями в разных зонах доступности.   
+ 
 
 ### Создание Kubernetes кластера
 
