@@ -64,8 +64,20 @@
      source backend.tfvars  
      terraform init -backend-config="access_key=$ACCESS_KEY" -backend-config="secret_key=$SECRET_KEY"  
      ```
-4. Создаем VPC с подсетями в разных зонах доступности.   
- 
+4. Создаем VPC с подсетями в разных зонах доступности.  
+   Будем использовать одну Master ноду и две Worker ноды.
+   После успешного выполнения команды `terraform apply` в директории `backend` проверяем созданную инфраструктуру.  
+   - Сервисный аккаунт:  
+  ![SA](./img/task1.4.SA.png)    
+  - S3-bucket c файлом настройки :  
+  ![S3-bucket](./img/task1.4.bucket.png)  
+  - Сеть и подсети:  
+  ![Network-subnets](./img/task1.4.Network.png)  
+  - Виртуальные машины в разных подсетях и зонах доступности:  
+  ![VPS](./img/task1.4.VPS.png)  
+  5. Выполняем команду  `terraform destroy`:
+  ![Destroy](./img/task1.4.destroy.png)  
+  Код выполняется без дополнительных ручных действий.  
 
 ### Создание Kubernetes кластера
 
