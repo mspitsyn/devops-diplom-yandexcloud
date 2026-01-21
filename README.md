@@ -5,6 +5,7 @@
     - [Создание облачной инфраструктуры](#создание-облачной-инфраструктуры)
     - [Решение. Создание облачной инфраструктуры](#решение-создание-облачной-инфраструктуры)
     - [Создание Kubernetes кластера](#создание-kubernetes-кластера)
+    - [Решение. Создание Kubernetes кластера](#решение-создание-kubernetes-кластера)
     - [Создание тестового приложения](#создание-тестового-приложения)
     - [Подготовка cистемы мониторинга и деплой приложения](#подготовка-cистемы-мониторинга-и-деплой-приложения)
     - [Деплой инфраструктуры в terraform pipeline](#деплой-инфраструктуры-в-terraform-pipeline)
@@ -54,16 +55,30 @@
 
 ---
 ### Решение. Создание облачной инфраструктуры  
-1. Сервисный аккаунт
-- Создаем сервисный аккаунт [sa-terraform.tf](./service-accounts/sa-terraform.tf) с правами `editor`.  
-Выводим в output **id** и **ключ** как sensitive данные, которые можно будет увидеть командами:  
-``terraform output -json service_account_keys | jq -r '.access_key'``  
-``terraform output -json service_account_keys | jq -r '.secret_key'``  
-
-![task1.1](./img/task1.1.png)  
-
-2. Подготавливаем S3 bucket в созданном ЯО аккаунте(создание бакета через TF)  
-   
+1. Создаем сервисный аккаунт [sa-terraform.tf](./terraform/SA-S3/sa-terraform.tf) с правами `editor`.  
+2. Подготавливаем S3 [bucket](./terraform/SA-S3/bucket.tf) в созданном ЯО аккаунте(создание бакета через TF).  
+   ![task1.1-2](./img/task1.1-2.png). Сохраняем ключи ACCESS_KEY и SECRET_KEY в файл `backend.tfvars` для дальнейшего использования.  
+3. Создаем [конфигурацию](./terraform/backend/backend.tf) Terrafrom для использования ранее созданного бакета как бекенд для хранения стейт файла.  
+   - Создаем директорию `backend`.
+     Выполняем команды из директории `backend`:
+     ``` bash  
+     source backend.tfvars  
+     terraform init -backend-config="access_key=$ACCESS_KEY" -backend-config="secret_key=$SECRET_KEY"  
+     ```
+4. Создаем VPC с подсетями в разных зонах доступности.  
+   Будем использовать одну Master ноду и две Worker ноды.
+   После успешного выполнения команды `terraform apply` в директории `backend` проверяем созданную инфраструктуру.  
+   - Сервисный аккаунт:  
+  ![SA](./img/task1.4.SA.png)    
+  - S3-bucket c файлом настройки :  
+  ![S3-bucket](./img/task1.4.bucket.png)  
+  - Сеть и подсети:  
+  ![Network-subnets](./img/task1.4.Network.png)  
+  - Виртуальные машины в разных подсетях и зонах доступности:  
+  ![VPS](./img/task1.4.VPS.png)  
+  5. Выполняем команду  `terraform destroy`:  
+  ![Destroy](./img/task1.4.destroy.png)  
+  Код выполняется без дополнительных ручных действий.  
 
 ### Создание Kubernetes кластера
 
@@ -84,6 +99,57 @@
 1. Работоспособный Kubernetes кластер.
 2. В файле `~/.kube/config` находятся данные для доступа к кластеру.
 3. Команда `kubectl get pods --all-namespaces` отрабатывает без ошибок.
+---
+### Решение. Создание Kubernetes кластера  
+Разворачиваем Kubernetes кластер из репозитория Kubespray.  
+Для этого клонируем репозиторий на свою рабочую машину:  
+![клонирование репозитория](./img/task2.1.png)  
+
+При создании облачной инфраструктуры с помощью terraform, мы создали inventory-файл `hosts.yaml` с помощью кода в файле [ansible.tf](./terraform/backend/ansible.tf):
+```bash 
+resource "local_file" "hosts_cfg_kubespray" {
+  content  = templatefile("${path.module}/hosts.tftpl", {
+    workers = yandex_compute_instance.worker
+    masters = yandex_compute_instance.master
+  })
+  filename = "../../../kubespray/inventory/mycluster/hosts.yaml"
+  
+  depends_on = [
+    yandex_compute_instance.master,
+    yandex_compute_instance.worker
+  ]
+}
+```  
+Который по [шаблону](./terraform/backend/hosts.tftpl) автоматически заполнит inventory-файл ip адресами нод.  
+
+Переходим на своей рабочей машине в директорию `/kubespray` и выполняем команды:    
+```bash  
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```  
+После установки зависимостей, с помощью `ansible` (выполнять команду при активированном виртуальном окружении `source .venv/bin/activate` из директории `kubespray/`):  
+   
+```bash  
+ansible-playbook -i inventory/mycluster/hosts.yaml -u user --become --become-user=root --private-key=~/.ssh/id_rsa -e 'ansible_ssh_common_args="-o StrictHostKeyChecking=no"' cluster.yml --flush-cache  
+```  
+Установка Kubernetes-кластера методом Kubespray завершена.  
+Результат выполнения команды:  
+   ![task2.1.2](./img/task2.1.2.png)  
+
+Создаем конфигурационный файл `~/.kube/config` кластера Kubernetes на мастер-ноде:  
+```bash  
+  mkdir -p $HOME/.kube  
+  cp -i /etc/kubernetes/admin.conf $HOME/.kube/config  
+  chown $(id -u):$(id -g) $HOME/.kube/config  
+```  
+Результаты:   
+Проверяем поды:  
+    ![task2.1.3](./img/task2.1.3.png)  
+Проверяем ноды:  
+    ![task2.1.4](./img/task2.1.4.png)  
+
+Создание Kubernetes-кластера успешно выполнено.  
 
 ---
 ### Создание тестового приложения
@@ -102,6 +168,8 @@
 
 1. Git репозиторий с тестовым приложением и Dockerfile.
 2. Регистри с собранным docker image. В качестве регистри может быть DockerHub или [Yandex Container Registry](https://cloud.yandex.ru/services/container-registry), созданный также с помощью terraform.
+
+---
 
 ---
 ### Подготовка cистемы мониторинга и деплой приложения

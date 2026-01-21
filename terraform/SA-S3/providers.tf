@@ -13,4 +13,5 @@ provider "yandex" {
   token     = local.token
   cloud_id  = local.cloud_id
   folder_id = local.folder_id
+  zone      = var.default_zone
 }

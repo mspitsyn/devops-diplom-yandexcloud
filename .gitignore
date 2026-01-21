@@ -13,6 +13,7 @@ contrib/offline/offline-files.tar.gz
 .cache
 *.bak
 *.tfstate
+*.tfvars
 *.tfstate*backup
 *.lock.hcl
 .terraform/
@@ -23,6 +24,9 @@ contrib/terraform/aws/credentials.tfvars
 *~
 vagrant/
 plugins/mitogen
+
+# Local files
+locals.tf
 
 # Ansible inventory
 inventory/*
