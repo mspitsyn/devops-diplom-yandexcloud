@@ -24,5 +24,8 @@ terraform {
 }
 
 provider "yandex" {
+  token     = local.token
+  cloud_id  = local.cloud_id
+  folder_id = local.folder_id
   zone      = "ru-central1-a"
 }
