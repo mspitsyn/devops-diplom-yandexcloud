@@ -7,6 +7,7 @@
     - [Создание Kubernetes кластера](#создание-kubernetes-кластера)
     - [Решение. Создание Kubernetes кластера](#решение-создание-kubernetes-кластера)
     - [Создание тестового приложения](#создание-тестового-приложения)
+    - [Решение. Создание тестового приложения.](#решение-создание-тестового-приложения)
     - [Подготовка cистемы мониторинга и деплой приложения](#подготовка-cистемы-мониторинга-и-деплой-приложения)
     - [Деплой инфраструктуры в terraform pipeline](#деплой-инфраструктуры-в-terraform-pipeline)
     - [Установка и настройка CI/CD](#установка-и-настройка-cicd)
@@ -170,6 +171,86 @@ ansible-playbook -i inventory/mycluster/hosts.yaml -u user --become --become-use
 2. Регистри с собранным docker image. В качестве регистри может быть DockerHub или [Yandex Container Registry](https://cloud.yandex.ru/services/container-registry), созданный также с помощью terraform.
 
 ---
+### Решение. Создание тестового приложения.  
+- Создаем отдельный [репозиторий](https://github.com/mspitsyn/devops-diplom-app.git) для тестового приложения.  
+- Создаем статичную web-страницу:  
+```html  
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дипломный проект DevOps</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎓 Дипломный практикум в Yandex.Cloud</h1>
+            <p>DevOps инженер: [Максим Спицын]</p>
+        </header>
+        
+        <main>
+            <section class="status">
+                <h2>Статус системы</h2>
+                <div class="status-cards">
+                    <div class="card online">
+                        <h3>Приложение</h3>
+                        <p>🟢 Онлайн</p>
+                    </div>
+                    <div class="card online">
+                        <h3>Kubernetes</h3>
+                        <p>🟢 Работает</p>
+                    </div>
+                    <div class="card online">
+                        <h3>Мониторинг</h3>
+                        <p>🟢 Активен</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="components">
+                <h2>Компоненты системы</h2>
+                <ul>
+                    <li>✅ Yandex Cloud Infrastructure</li>
+                    <li>✅ Kubernetes Cluster</li>
+                    <li>✅ Docker Registry</li>
+                    <li>✅ Prometheus + Grafana</li>
+                    <li>✅ CI/CD Pipeline</li>
+                    <li>✅ Atlantis для Terraform</li>
+                </ul>
+            </section>
+        </main>
+        
+        <footer>
+            <p>Время сервера: <span id="server-time"></span></p>
+            <p>Версия: 1.0.0</p>
+        </footer>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
+```  
+- Подготавливаем `Dockerfile` для создания образа приложения:  
+```Dockerfile  
+FROM nginx:1.27.0
+RUN rm -rf /usr/share/nginx/html/*
+COPY web-html/ /usr/share/nginx/html/
+EXPOSE 80
+```  
+```bash  
+docker build -t mspitsyn/devops-diplom-app:0.1 .
+```  
+Проверяем созданный образ:  
+![task3.2.1](./img/task3.2.1.png)  
+
+Публикуем образ в Docker Hub:  
+```bash  
+docker push mspitsyn/devops-diplom-app:0.1  
+```  
+Проверяем опубликованный образ на Docker Hub:  
+![task3.2.2](./img/task3.2.2.png)  
 
 ---
 ### Подготовка cистемы мониторинга и деплой приложения
