@@ -9,6 +9,7 @@
     - [Создание тестового приложения](#создание-тестового-приложения)
     - [Решение. Создание тестового приложения.](#решение-создание-тестового-приложения)
     - [Подготовка cистемы мониторинга и деплой приложения](#подготовка-cистемы-мониторинга-и-деплой-приложения)
+    - [Решение. Подготовка cистемы мониторинга и деплой приложения.](#решение-подготовка-cистемы-мониторинга-и-деплой-приложения)
     - [Деплой инфраструктуры в terraform pipeline](#деплой-инфраструктуры-в-terraform-pipeline)
     - [Установка и настройка CI/CD](#установка-и-настройка-cicd)
   - [Что необходимо для сдачи задания?](#что-необходимо-для-сдачи-задания)
@@ -264,6 +265,74 @@ docker push mspitsyn/devops-diplom-app:0.1
 
 Способ выполнения:
 1. Воспользоваться пакетом [kube-prometheus](https://github.com/prometheus-operator/kube-prometheus), который уже включает в себя [Kubernetes оператор](https://operatorhub.io/) для [grafana](https://grafana.com/), [prometheus](https://prometheus.io/), [alertmanager](https://github.com/prometheus/alertmanager) и [node_exporter](https://github.com/prometheus/node_exporter). Альтернативный вариант - использовать набор helm чартов от [bitnami](https://github.com/bitnami/charts/tree/main/bitnami).
+---
+### Решение. Подготовка cистемы мониторинга и деплой приложения.  
+Скопируем конфигурационный файл созданного kubernetes-кластера с мастер-ноды на нашу рабочую машину:  
+```bash  
+  scp user@158.160.114.160:~/.kube/config ~/.kube/diplom-config
+```  
+Отредактируем в конфигурационном файле IP-адрес (с локального на публичный IP мастер-ноды):  
+```bash  
+  nano ~/.kube/diplom-config  
+```  
+Применим новый конфигурационный файл для k8s:  
+```bash  
+  export KUBECONFIG=~/.kube/diplom-config  
+```  
+Проверяем:  
+![task4.1.1](./img/task4.1.1.png)  
+
+Добавляем helm репозиторий:  
+```bash  
+  helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+``` 
+Сохраним значения по умолчанию Helm чарта prometheus-community в [файл](./k8s-configs/grafana-values.yaml) в директории `k8s-configs` и отредактируем его:
+```bash  
+  helm show values prometheus-community/kube-prometheus-stack > grafana-values.yaml
+``` 
+Изменяем пароль по умолчанию (значение для `adminPassword:`) для входа в Grafana, а также изменим сервис, присвоим ему порт 30050:  
+```bash  
+grafana:
+  service:
+    portName: http-web
+    type: NodePort
+    nodePort: 30050
+```  
+Выполняем установку prometheus-community:  
+```bash  
+  helm install kube-prometheus prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace
+``` 
+После установки, проверяем поды в namespace monitoting:  
+![task4.1.2](./img/task4.1.2.png)  
+![task4.1.3](./img/task4.1.3.png)  
+
+Проверяем web-интерфейс Grafana и проходим авторизацию с заранее заданным в grafana-values.yaml паролем:  
+![task4.1.4](./img/task4.1.4.png)  
+
+Авторизация проходит успешно, данные о состоянии кластера отображаются на дашбордах:  
+![task4.1.5](./img/task4.1.5.png)  
+![task4.1.6](./img/task4.1.6.png)  
+
+Развёртывание системы мониторинга успешно завершено.  
+
+Далее развёртываем наше тестовое приложение на Kubernetes кластере.  
+Создаем отдельный namespace, в котором будем развёртывать тестовое приложение:  
+```bash  
+  kubectl create namespace diplom-app
+``` 
+Пишем [манифест](./k8s-configs/deployment-app.yaml) Deployment с тестовым приложением.  
+Применяем манифест Deployment и проверяем результат:  
+```bash  
+  kubectl apply -f deployment-app.yaml -n diplom-app  
+``` 
+
+Пишем [манифест](./k8s-configs/service-app.yaml) сервиса с типом NodePort для доступа к web-интерфейсу тестового приложения:  
+Применяем манифест сервиса и проверяем результат:
+```bash  
+  kubectl apply -f service-app.yaml -n diplom-app  
+``` 
+
+---
 
 ### Деплой инфраструктуры в terraform pipeline
 

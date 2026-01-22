@@ -1,0 +1,15 @@
+## service-app.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: diplom-app-service
+  namespace: diplom-app
+spec:
+  type: NodePort
+  selector:
+    app: web-app
+  ports:
+  - protocol: TCP
+    port: 80
+    nodePort: 30051
