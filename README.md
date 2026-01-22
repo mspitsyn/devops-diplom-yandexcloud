@@ -300,10 +300,11 @@ grafana:
 ```  
 Выполняем установку prometheus-community:  
 ```bash  
-  helm install kube-prometheus prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace
+helm upgrade --install monitoring prometheus-community/kube-prometheus-stack --create-namespace -n monitoring -f k8s-configs/grafana-values.yaml
 ``` 
 После установки, проверяем поды в namespace monitoting:  
 ![task4.1.2](./img/task4.1.2.png)  
+Проверяем ноды в namespace monitoting:
 ![task4.1.3](./img/task4.1.3.png)  
 
 Проверяем web-интерфейс Grafana и проходим авторизацию с заранее заданным в grafana-values.yaml паролем:  
@@ -324,13 +325,32 @@ grafana:
 Применяем манифест Deployment и проверяем результат:  
 ```bash  
   kubectl apply -f deployment-app.yaml -n diplom-app  
-``` 
+```  
+![task5.1.1](./img/task5.1.1.png)  
 
 Пишем [манифест](./k8s-configs/service-app.yaml) сервиса с типом NodePort для доступа к web-интерфейсу тестового приложения:  
 Применяем манифест сервиса и проверяем результат:
 ```bash  
   kubectl apply -f service-app.yaml -n diplom-app  
 ``` 
+![task5.1.2](./img/task5.1.2.png)  
+
+Сервис создан. 
+Проверяем доступ к приложению по публичному IP:  
+![task5.2.1](./img/task5.2.1.png)  
+
+Так как у нас несколько реплик приложения, создадим [балансировщик нагрузки](./terraform/backend/load-balancer.tf).  
+Выполняем код `load-balancer.tf` командой `terraform apply`:  
+![task5.3.1](./img/task5.3.1.png)      
+
+Проверяем работу балансировщика нагрузки. 
+Тестовое приложение будет открываться по порту 80, а Grafana будет открываться по порту 3000:  
+
+- Тестовое приложение:  
+![task5.3.2](./img/task5.3.2.png)  
+
+- Grafana:  
+![task5.3.3](./img/task5.3.3.png)  
 
 ---
 
