@@ -65,7 +65,7 @@ resource "yandex_compute_instance" "master" {
     user-data = data.template_file.cloudinit.rendered
   }
 
-  scheduling_policy { preemptible = true }
+  scheduling_policy { preemptible = false }
 
   network_interface {
     subnet_id = yandex_vpc_subnet.subnet1.id
