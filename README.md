@@ -13,6 +13,7 @@
     - [Деплой инфраструктуры в terraform pipeline](#деплой-инфраструктуры-в-terraform-pipeline)
     - [Решение. Деплой инфраструктуры в terraform pipeline.](#решение-деплой-инфраструктуры-в-terraform-pipeline)
     - [Установка и настройка CI/CD](#установка-и-настройка-cicd)
+    - [Решение. Установка и настройка CI/CD](#решение-установка-и-настройка-cicd)
   - [Что необходимо для сдачи задания?](#что-необходимо-для-сдачи-задания)
 
 **Перед началом работы над дипломным заданием изучите [Инструкция по экономии облачных ресурсов](https://github.com/netology-code/devops-materials/blob/master/cloudwork.MD).**
@@ -394,6 +395,22 @@ helm upgrade --install monitoring prometheus-community/kube-prometheus-stack --c
 3. При создании тега (например, v1.0.0) происходит сборка и отправка с соответствующим label в регистри, а также деплой соответствующего Docker образа в кластер Kubernetes.
 
 ---
+### Решение. Установка и настройка CI/CD  
+Настраиваем ci/cd систему для автоматической сборки docker image и деплоя приложения при изменении кода с помощью **GitHub Actions**.  
+Для этого в [репозитории приложения](https://github.com/mspitsyn/devops-diplom-app) создаем файл [ci-cd.yml](https://github.com/mspitsyn/devops-diplom-app/blob/main/.github/workflows/ci-cd.yml).  
+Добавляем в secrets на GitHub данные для DockerHub и Kubernetes-кластера.  
+![task7.1.1](./img/task7.1.1.png)  
+Редактируем index.html и пишем в коммите комментарий v1.0.1 и отправляем в ветку main в github:  
+![task7.1.2](./img/task7.1.2.png)  
+![task7.1.4](./img/task7.1.4.png)  
+Проверяем образы на DockerHub. Новый образ с новым tag добавился в DockerHub:  
+![task7.1.3](./img/task7.1.3.png)  
+
+
+
+
+---
+
 ## Что необходимо для сдачи задания?
 
 1. Репозиторий с конфигурационными файлами Terraform и готовность продемонстрировать создание всех ресурсов с нуля.
