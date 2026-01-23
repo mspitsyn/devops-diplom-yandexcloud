@@ -11,6 +11,7 @@
     - [Подготовка cистемы мониторинга и деплой приложения](#подготовка-cистемы-мониторинга-и-деплой-приложения)
     - [Решение. Подготовка cистемы мониторинга и деплой приложения.](#решение-подготовка-cистемы-мониторинга-и-деплой-приложения)
     - [Деплой инфраструктуры в terraform pipeline](#деплой-инфраструктуры-в-terraform-pipeline)
+    - [Решение. Деплой инфраструктуры в terraform pipeline.](#решение-деплой-инфраструктуры-в-terraform-pipeline)
     - [Установка и настройка CI/CD](#установка-и-настройка-cicd)
   - [Что необходимо для сдачи задания?](#что-необходимо-для-сдачи-задания)
 
@@ -108,7 +109,7 @@
 ![клонирование репозитория](./img/task2.1.png)  
 
 При создании облачной инфраструктуры с помощью terraform, мы создали inventory-файл `hosts.yaml` с помощью кода в файле [ansible.tf](./terraform/backend/ansible.tf):
-```bash 
+```bash
 resource "local_file" "hosts_cfg_kubespray" {
   content  = templatefile("${path.module}/hosts.tftpl", {
     workers = yandex_compute_instance.worker
@@ -268,15 +269,15 @@ docker push mspitsyn/devops-diplom-app:0.1
 ---
 ### Решение. Подготовка cистемы мониторинга и деплой приложения.  
 Скопируем конфигурационный файл созданного kubernetes-кластера с мастер-ноды на нашу рабочую машину:  
-```bash  
+```bash
   scp user@158.160.114.160:~/.kube/config ~/.kube/diplom-config
 ```  
 Отредактируем в конфигурационном файле IP-адрес (с локального на публичный IP мастер-ноды):  
-```bash  
+```bash
   nano ~/.kube/diplom-config  
 ```  
 Применим новый конфигурационный файл для k8s:  
-```bash  
+```bash
   export KUBECONFIG=~/.kube/diplom-config  
 ```  
 Проверяем:  
@@ -291,7 +292,7 @@ docker push mspitsyn/devops-diplom-app:0.1
   helm show values prometheus-community/kube-prometheus-stack > grafana-values.yaml
 ``` 
 Изменяем пароль по умолчанию (значение для `adminPassword:`) для входа в Grafana, а также изменим сервис, присвоим ему порт 30050:  
-```bash  
+```yml 
 grafana:
   service:
     portName: http-web
@@ -364,6 +365,16 @@ helm upgrade --install monitoring prometheus-community/kube-prometheus-stack --c
 3. Дашборды в grafana отображающие состояние Kubernetes кластера.
 4. Http доступ на 80 порту к тестовому приложению.
 5. Atlantis или terraform cloud или ci/cd-terraform
+---
+### Решение. Деплой инфраструктуры в terraform pipeline.  
+Настраиваем автоматическое развертывание инфраструктуры terraform через Github Action.  
+- Cоздаем директорию .github/workflows/ и в ней два файла:  
+[terraform-bucket.yml](./.github/workflows/terraform-bucket.yml) - для развертывания бакета и сервисного аккаунта,  
+[terraform-backend.yml](./.github/workflows/terraform-backend.yml) - для развертывания VPS, сети, подсети и прочей инфраструктуры. 
+- Добавляем секретные данные, которые будут передаваться при исполнении манифестов:  
+![task6.1.1](./img/task6.1.1.png)  
+
+
 ---
 ### Установка и настройка CI/CD
 
