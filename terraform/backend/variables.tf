@@ -1,5 +1,20 @@
 ###cloud vars
 
+variable "token" {
+  type        = string
+  description = "OAuth-token; https://cloud.yandex.ru/docs/iam/concepts/authorization/oauth-token"
+}
+
+variable "cloud_id" {
+  type        = string
+  description = "https://cloud.yandex.ru/docs/resource-manager/operations/cloud/get-id"
+}
+
+variable "folder_id" {
+  type        = string
+  description = "https://cloud.yandex.ru/docs/resource-manager/operations/folder/get-id"
+}
+
 variable "vpc_name_network" {
   type        = string
   default     = "develop"
@@ -40,4 +55,16 @@ variable "subnet2" {
   type        = string
   default     = "subnet-2"
   description = "subnet name"
+}
+
+variable "ssh-key" {
+  description = "SSH public key"
+  type        = string
+  default     = ""
+}
+
+variable "ssh-private-key" {
+  description = "SSH private key"
+  type        = string
+  default     = ""
 }

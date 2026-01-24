@@ -20,7 +20,7 @@ resource "yandex_vpc_subnet" "subnet2" {
 data "template_file" "cloudinit" {
   template = file("${path.module}/cloud-config.yml")
   vars = {
-    ssh_public_key =  local.ssh-keys
-    ssh_private_key = local.ssh-private-keys
+    ssh_public_key =  var.ssh-key
+    ssh_private_key = var.ssh-private-key
   }
 }
