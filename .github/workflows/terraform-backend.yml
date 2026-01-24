@@ -29,6 +29,8 @@ jobs:
       FOLDER_ID: ${{ secrets.YC_FOLDER_ID }}
       SSH_PUBLIC: ${{ secrets.SSH_PUBLIC }}
       SSH_PRIVATE: ${{ secrets.SSH_PRIVATE }}
+      ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
 
     steps:
     - name: Checkout

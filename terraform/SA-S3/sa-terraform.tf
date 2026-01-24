@@ -1,13 +1,13 @@
 // Создание сервисного аккаунта
 resource "yandex_iam_service_account" "terraform" {
   name        = "terraform"
-  folder_id   = local.folder_id
+  folder_id   = var.folder_id
   description = "SA for terraform"
 }
 
 // Назначение роли сервисному аккаунту
 resource "yandex_resourcemanager_folder_iam_member" "editor" {
-  folder_id = local.folder_id
+  folder_id = var.folder_id
   role      = "editor"
   member    = "serviceAccount:${yandex_iam_service_account.terraform.id}"
 }
