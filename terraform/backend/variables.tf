@@ -57,13 +57,13 @@ variable "subnet2" {
   description = "subnet name"
 }
 
-variable "ssh-key" {
+variable "ssh_public_key" {
   description = "SSH public key"
   type        = string
   default     = ""
 }
 
-variable "ssh-private-key" {
+variable "ssh_private_key" {
   description = "SSH private key"
   type        = string
   default     = ""
