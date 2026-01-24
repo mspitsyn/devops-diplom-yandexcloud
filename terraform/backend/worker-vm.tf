@@ -52,7 +52,7 @@ resource "yandex_compute_instance" "worker" {
 
   metadata = {
     serial-port-enable = 1
-    ssh-keys = "user:${local.ssh-keys}"
+    ssh-keys = "user:${var.ssh_public_key}"
     user-data = data.template_file.cloudinit.rendered
   }
 
