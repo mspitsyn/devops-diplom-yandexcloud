@@ -238,8 +238,7 @@ ansible-playbook -i inventory/mycluster/hosts.yaml -u user --become --become-use
 - Подготавливаем `Dockerfile` для создания образа приложения:  
 ```Dockerfile  
 FROM nginx:1.27.0
-RUN rm -rf /usr/share/nginx/html/*
-COPY web-html/ /usr/share/nginx/html/
+COPY index.html /usr/share/nginx/html/
 EXPOSE 80
 ```  
 ```bash  
