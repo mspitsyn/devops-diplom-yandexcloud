@@ -374,7 +374,9 @@ helm upgrade --install monitoring prometheus-community/kube-prometheus-stack --c
 [terraform-backend.yml](./.github/workflows/terraform-backend.yml) - для развертывания VPS, сети, подсети и прочей инфраструктуры. 
 - Добавляем секретные данные, которые будут передаваться при исполнении манифестов:  
 ![task6.1.1](./img/task6.1.1.png)  
-
+- Манифест выполняется при ручном запуске, а также при git push кода Terraform в main ветку репозитория.  
+- Результат выполнения манифестов:  
+![task7.1.5](./img/task7.1.5.png)  
 
 ---
 ### Установка и настройка CI/CD
