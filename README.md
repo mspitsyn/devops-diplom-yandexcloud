@@ -14,7 +14,7 @@
     - [Решение. Деплой инфраструктуры в terraform pipeline.](#решение-деплой-инфраструктуры-в-terraform-pipeline)
     - [Установка и настройка CI/CD](#установка-и-настройка-cicd)
     - [Решение. Установка и настройка CI/CD](#решение-установка-и-настройка-cicd)
-  - [Что необходимо для сдачи задания?](#что-необходимо-для-сдачи-задания)
+  - [ССылки на ресурсы:](#ссылки-на-ресурсы)
 
 **Перед началом работы над дипломным заданием изучите [Инструкция по экономии облачных ресурсов](https://github.com/netology-code/devops-materials/blob/master/cloudwork.MD).**
 
@@ -407,19 +407,18 @@ helm upgrade --install monitoring prometheus-community/kube-prometheus-stack --c
 ![task7.1.4](./img/task7.1.4.png)  
 Проверяем образы на DockerHub. Новый образ с новым tag добавился в DockerHub:  
 ![task7.1.3](./img/task7.1.3.png)  
-
-
-
+[Web-страница](http://158.160.191.86/) обновилась. 
+![task7.1.6](./img/task7.1.6.png)  
+Автоматическая сборка docker-image с новым тегом  и деплой приложения в кластер прошли успешно.  
 
 ---
 
-## Что необходимо для сдачи задания?
+## ССылки на ресурсы:
 
-1. Репозиторий с конфигурационными файлами Terraform и готовность продемонстрировать создание всех ресурсов с нуля.
-2. Пример pull request с комментариями созданными atlantis'ом или снимки экрана из Terraform Cloud или вашего CI-CD-terraform pipeline.
-3. Репозиторий с конфигурацией ansible, если был выбран способ создания Kubernetes кластера при помощи ansible.
-4. Репозиторий с Dockerfile тестового приложения и ссылка на собранный docker image.
-5. Репозиторий с конфигурацией Kubernetes кластера.
-6. Ссылка на тестовое приложение и веб интерфейс Grafana с данными доступа.
-7. Все репозитории рекомендуется хранить на одном ресурсе (github, gitlab)
+1. [Репозиторий с конфигурационными файлами Terraform](https://github.com/mspitsyn/devops-diplom-yandexcloud)  
+4. [Репозиторий с Dockerfile тестового приложения](https://github.com/mspitsyn/devops-diplom-app)  
+5. [Docker image в DockerHub](https://hub.docker.com/r/mspitsyn/devops-diplom-app/tags)  
+6. [Тестовое приложение / web-страница](http://89.169.184.1:30051/)  
+7. [Web-интерфейс Grafana](http://158.160.200.113:3000/login) Login: admin Password: my-passwd  
+
 
