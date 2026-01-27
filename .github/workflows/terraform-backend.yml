@@ -15,8 +15,8 @@ on:
     inputs:
       apply:
         description: 'Set to "true" to apply infrastructure changes'
-        required: true
-        default: 'true'
+        required: false
+        default: "true"
 
 jobs:
   terraform:
