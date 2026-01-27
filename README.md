@@ -403,7 +403,7 @@ helm upgrade --install monitoring prometheus-community/kube-prometheus-stack --c
 ![task7.1.1](./img/task7.1.1.png)  
 Редактируем index.html и пишем в коммите комментарий v1.0.1 и отправляем в ветку main в github:  
 ![task7.1.2](./img/task7.1.2.png)  
-![task7.1.4](./img/task7.1.4.png)  
+
 Проверяем образы на DockerHub. Новый образ с новым tag добавился в DockerHub:  
 ![task7.1.3](./img/task7.1.3.png)  
 [Web-страница](http://158.160.191.86/) обновилась. 
