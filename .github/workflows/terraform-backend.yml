@@ -42,9 +42,7 @@ jobs:
         terraform_version: "1.14.3"
 
     - name: Terraform Init
-      run: terraform -chdir=./terraform/backend init \
-           -backend-config="access_key=$ACCESS_KEY" \
-           -backend-config="secret_key=$SECRET_KEY"
+      run: terraform -chdir=./terraform/backend init -backend-config="access_key=${{env.ACCESS_KEY}}" -backend-config="secret_key=${{env.SECRET_KEY}}"
 
     - name: Terraform Format and Validate
       run: terraform -chdir=./terraform/backend validate
