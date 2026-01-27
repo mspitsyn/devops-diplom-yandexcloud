@@ -345,7 +345,7 @@ helm upgrade --install monitoring prometheus-community/kube-prometheus-stack --c
 ![task5.3.1](./img/task5.3.1.png)      
 
 Проверяем работу балансировщика нагрузки. 
-Тестовое приложение будет открываться по порту 80, а Grafana будет открываться по порту 3000:  
+Тестовое приложение и Grafana открываются на порту 80:  
 
 - Тестовое приложение:  
 ![task5.3.2](./img/task5.3.2.png)  
@@ -417,7 +417,7 @@ helm upgrade --install monitoring prometheus-community/kube-prometheus-stack --c
 1. [Репозиторий с конфигурационными файлами Terraform](https://github.com/mspitsyn/devops-diplom-yandexcloud)  
 4. [Репозиторий с Dockerfile тестового приложения](https://github.com/mspitsyn/devops-diplom-app)  
 5. [Docker image в DockerHub](https://hub.docker.com/r/mspitsyn/devops-diplom-app/tags)  
-6. [Тестовое приложение / web-страница](http://89.169.184.1:30051/)  
-7. [Web-интерфейс Grafana](http://158.160.200.113:3000/login) Login: admin Password: my-passwd  
+6. [Тестовое приложение / web-страница](http://158.160.204.12/)  
+7. [Web-интерфейс Grafana](http://158.160.195.2/) Login: admin Password: my-passwd  
 
 
