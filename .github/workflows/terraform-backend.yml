@@ -15,8 +15,8 @@ on:
     inputs:
       apply:
         description: 'Set to "true" to apply infrastructure changes'
-        required: false
-        default: 'false'
+        required: true
+        default: 'true'
 
 jobs:
   terraform:
@@ -42,7 +42,9 @@ jobs:
         terraform_version: "1.14.3"
 
     - name: Terraform Init
-      run: terraform -chdir=./terraform/backend init
+      run: terraform -chdir=./terraform/backend init \
+           -backend-config="access_key=$ACCESS_KEY" \
+           -backend-config="secret_key=$SECRET_KEY"
 
     - name: Terraform Format and Validate
       run: terraform -chdir=./terraform/backend validate

@@ -16,7 +16,7 @@ resource "yandex_lb_network_load_balancer" "nlb-grafana" {
   name = "grafana"
   listener {
     name        = "grafana-listener"
-    port        = 3000
+    port        = 80
     target_port = 30050
     external_address_spec {
       ip_version = "ipv4"
