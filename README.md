@@ -70,7 +70,7 @@
      terraform init -backend-config="access_key=$ACCESS_KEY" -backend-config="secret_key=$SECRET_KEY"  
      ```
 4. Создаем VPC с подсетями в разных зонах доступности.  
-   Будем использовать одну Master ноду и две Worker ноды.
+   Будем использовать одну Master ноду и две Worker ноды.  
    После успешного выполнения команды `terraform apply` в директории `backend` проверяем созданную инфраструктуру.  
    - Сервисный аккаунт:  
   ![SA](./img/task1.4.SA.png)    
